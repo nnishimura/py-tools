@@ -7,9 +7,9 @@
 #
 # Student ID: 620011
 #
-# Date: 12/5/15
+# Date: 13/9/15
 #
-# Modified 12/5/15 to add batch evaluate
+# Modified 13/9/15 to add batch evaluate
 #
 
 import csv
