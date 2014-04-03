@@ -1,5 +1,5 @@
 #
-# Pyton program for Project 3, 2013s1
+# Pyton program for Project 3, 2013s2
 #
 # Author: Naoko Nishimura
 #
@@ -7,9 +7,9 @@
 #
 # Student ID: 620011
 #
-# Date: 12/5/27
+# Date: 13/10/27
 #
-# Modified 12/5/27 to modify play
+# Modified 13/10/27 to modify play
 #
 
 
@@ -20,7 +20,7 @@ strength={'A':13,'K':12,'Q':11,'J':10,'0':9,'9':8,'8':7,'7':6,'6':5,'5':4,'4':3,
 cards=[]
 def sort_hand_tuples(cards):
     '''make a list of tuples and sort it by the length of each suit
-    and the lists inside by strength'''
+    and lists its csrds in order of its strength'''
     '''[(suit,[card]),(suit,[card,card_stronger,...])]'''
     
     mydict=defaultdict(list)
