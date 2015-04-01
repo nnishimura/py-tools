@@ -1,5 +1,5 @@
 #
-# Pyton program for Project 3, 2013s2
+# A series of function that returns to "the best" hand for card-game hearts. 
 #
 # Author: Naoko Nishimura
 #
