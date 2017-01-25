@@ -47,5 +47,3 @@ for folderName,subfolders,filenames in os.walk('./TEST_EPOI'):
                     shutil.move(fullpath, dirname_sub)
                 else:
                     shutil.move(fullpath, dirname)
-                
-                print(fname[0:7].split("-"),RepresentsInt(dirname_sub_after))
