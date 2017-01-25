@@ -51,7 +51,7 @@ class FlushFacebookCache:
 
             # Full URL request including FB debugger and params
             full_url = self.fb_url + '/?scrape=true&access_token=' + self.access_token + '&id=' + page
-            payload = {'id': page,'scrape':True,'access_token':'EAACEdEose0cBAE88mO2TzZALjidDIOlKIfNe8MPbTmWQaPO1Y1uZC0ET1svxPkc8297HxFVhZAlZAZBFsZBetflQqS0ihbCMVXDB20ftOK1gfBOsF34zsjNi5nveSUZC7U4DOek2nkxV5sZCmXVHbdw0otWE6UxXeisMUOE925bPZCQZDZD'}
+            payload = {'id': page,'scrape':True,'access_token':self.access_token}
             r = requests.post(full_url, data=json.dumps(payload))
 
             # Use if payload is in an object & param order doesn't matter
