@@ -18,7 +18,7 @@ Sending POST request to Graph API to force scrape new og information.
 ### Usage
 1. Generate sitemap at http://www.xml-sitemaps.com/ or create sitemap.xml by yourself
 2. Place the sitemap on ./sitemaps/sitemap.xml
-3. (If necessary) pip install json
+3. (If necessary) ```pip install json```
 4. get your access token on https://developers.facebook.com/tools/explorer/ and insert it to this script
-4. run delete-facebook-cache.py
+4. Place the script on your current directory and run ```python delete-facebook-cache.py```
 
