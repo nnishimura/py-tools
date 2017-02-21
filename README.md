@@ -20,5 +20,15 @@ Sending POST request to Graph API to force scrape new og information.
 2. Place the sitemap on ./sitemaps/sitemap.xml
 3. (If necessary) ```pip install json```
 4. get your access token on https://developers.facebook.com/tools/explorer/ and insert it to this script
-4. Place the script on your current directory and run ```python delete-facebook-cache.py```
+5. Place the script on your current directory and run ```python delete-facebook-cache.py```
+
+## resize_psd.py
+
+Save psd as jpg with resizing function.
+
+### Usage
+1. mkdir ./psd & ./jpg
+2. run ```python resize_psd.py```
+
+
 
