@@ -30,5 +30,5 @@ Save psd as jpg with resizing function.
 1. mkdir ./psd & ./jpg
 2. run ```python resize_psd.py```
 
-
-
+## excel-reader.py
+http://pbpython.com/excel-diff-pandas.html
