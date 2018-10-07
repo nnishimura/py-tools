@@ -8,6 +8,8 @@
 # 4. generate new excel
 
 import pandas as pd
+from numpy import array
+from pprint import pprint
 
 
 def get_excel(excel):
@@ -20,6 +22,15 @@ df1 = pd.read_excel(excel_file1)
 df2 = pd.read_excel(excel_file2)
 
 df2_queried = df2.query('c1 == [u"TS初期",u"TSその他初期",u"TS機器"]')
+data = {
+    u'蠎苓・ID': [],
+    u'c2': [],
+    u'Initial': [],
+    u'PAYG': [],
+    u'Maitsuki': [],
+    u'Nankagetsu': [],
+    u'Total': []
+}
 
 for index, row in df2_queried.iterrows():
     compare1 = row[u"貸方金額"]
@@ -29,4 +40,31 @@ for index, row in df2_queried.iterrows():
     for index2, row2 in df1_queried.iterrows():
         compare2 = row["c2"]
         if compare2 != compare1:
-            print code1
+            for key in data:
+                if key == u'蠎苓・ID':
+                    index3 = 0
+                elif key == u'c2':
+                    index3 = 1
+                elif key == u'Initial':
+                    index3 = 2
+                elif key == u'PAYG':
+                    index3 = 3
+                elif key == u'Maitsuki':
+                    index3 = 4
+                elif key == u'Nankagetsu':
+                    index3 = 5
+                elif key == u'Total':
+                    index3 = 6
+
+                new = data[key].append(row2[index3])
+
+# data_formatted = array(data)
+# columns=[蠎苓・ID,c2,Initial,PAYG,Maitsuki,Nankagetsu,Total]
+print data
+df = pd.DataFrame(data)
+writer = pd.ExcelWriter("./src/hoge1.xlsx")
+df.to_excel(writer, sheet_name="hoge1", index=False)
+workbook = writer.book
+worksheet1 = writer.sheets['hoge1']
+
+writer.save()
