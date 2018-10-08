@@ -1,70 +1,148 @@
 #!/usr/bin/python
 # -*- coding: utf-8 -*-
 
-# TODO:
-# 1. read two excel file by row
-# 2. loop excel one and store diff in a separate array
-# 3. write 2 to a new excel
-# 4. generate new excel
-
 import pandas as pd
 from numpy import array
+from numpy import nan_to_num
+from collections import OrderedDict
 from pprint import pprint
 
-
-def get_excel(excel):
-    return pd.read_excel(excel_file)
-
-
-excel_file1 = './src/June_2018_Revenue_by_Shop.xlsx'
-excel_file2 = './src/201806.xlsx'
-df1 = pd.read_excel(excel_file1)
-df2 = pd.read_excel(excel_file2)
-
-df2_queried = df2.query('c1 == [u"TS初期",u"TSその他初期",u"TS機器"]')
-data = {
-    u'蠎苓・ID': [],
-    u'c2': [],
+# 1
+# 取引先コードごとに、
+# 201806のC列＝TS初期orTSその他初期orTS機器の
+# G列の合計＝June_2018エクセルの
+# C列Initialが一致するはずなので、
+# 差分があればそのリスト欲しいです。
+out = {
+    u'取引先コード': [],
+    u'取引先名': [],
+    u'補助科目': [],
     u'Initial': [],
-    u'PAYG': [],
-    u'Maitsuki': [],
-    u'Nankagetsu': [],
-    u'Total': []
+    u'貸方金額': []
 }
 
-for index, row in df2_queried.iterrows():
+target_excel = './src/initial/target.xlsx'
+compare_excel = './src/initial/compare.xlsx'
+df_target = pd.read_excel(target_excel)
+df_compare = pd.read_excel(compare_excel)
+
+df_target_queried = df_target.query('c2 == [u"TS初期",u"TSその他初期",u"TS機器"]')
+
+for index, row in df_target_queried.iterrows():
     compare1 = row[u"貸方金額"]
-    code1 = str(row[u"c2"])
-    df1_queried = df1.query('c2 == ["' + code1 + '"]')
-
-    for index2, row2 in df1_queried.iterrows():
-        compare2 = row["c2"]
+    code1 = str(row["c1"])
+    df_compare_queried = df_compare.query('c1 == ["' + code1 + '"]')
+    for index2, row2 in df_compare_queried.iterrows():
+        compare2 = row2[u"Initial"]
         if compare2 != compare1:
-            for key in data:
-                if key == u'蠎苓・ID':
-                    index3 = 0
-                elif key == u'c2':
-                    index3 = 1
+            for key in out:
+                if key == u'取引先コード':
+                    value = row[4]
+                elif key == u'取引先名':
+                    value = row[5]
+                elif key == u'補助科目':
+                    value = row[2]
                 elif key == u'Initial':
-                    index3 = 2
+                    value = row2[u"Initial"]
+                elif key == u'貸方金額':
+                    value = row[6]
+                out[key].append(value)
+
+df_out = pd.DataFrame(out, columns=[u'取引先コード', u'取引先名', u'補助科目', u'Initial', u'貸方金額'])
+writer = pd.ExcelWriter("./src/initial.xlsx")
+df_out.to_excel(writer, sheet_name="initial", index=False)
+
+writer.save()
+
+# 2
+# 取引先コードごとに、
+# 201806のC列＝TS従量SMSorTS従量みせばんorTS従量CNPorTS従量CTIの
+# G列の合計＝June_2018エクセルの
+# D列PAYGが一致するはずなので、差分があればそのリスト欲しいです。
+out = {
+    u'取引先コード': [],
+    u'取引先名': [],
+    u'補助科目': [],
+    u'PAYG': [],
+    u'貸方金額': []
+}
+
+target_excel = './src/initial/target.xlsx'
+compare_excel = './src/initial/compare.xlsx'
+df_target = pd.read_excel(target_excel)
+df_compare = pd.read_excel(compare_excel)
+
+df_target_queried = df_target.query('c2 == [u"TS従量SMS",u"TS従量みせばん",u"TS従量CNP",u"TS従量CTI"]')
+
+for index, row in df_target_queried.iterrows():
+    compare1 = row[u"貸方金額"]
+    code1 = str(row["c1"])
+    df_compare_queried = df_compare.query('c1 == ["' + code1 + '"]')
+    for index2, row2 in df_compare_queried.iterrows():
+        compare2 = row2[u"PAYG"]
+        if compare2 != compare1:
+            for key in out:
+                if key == u'取引先コード':
+                    value = row[4]
+                elif key == u'取引先名':
+                    value = row[5]
+                elif key == u'補助科目':
+                    value = row[2]
                 elif key == u'PAYG':
-                    index3 = 3
-                elif key == u'Maitsuki':
-                    index3 = 4
-                elif key == u'Nankagetsu':
-                    index3 = 5
-                elif key == u'Total':
-                    index3 = 6
+                    value = row2[u"PAYG"]
+                elif key == u'貸方金額':
+                    value = row[6]
+                out[key].append(value)
 
-                new = data[key].append(row2[index3])
+df_out = pd.DataFrame(out, columns=[u'取引先コード', u'取引先名', u'補助科目', u'PAYG', u'貸方金額'])
+writer = pd.ExcelWriter("./src/payg.xlsx")
+df_out.to_excel(writer, sheet_name="payg", index=False)
 
-# data_formatted = array(data)
-# columns=[蠎苓・ID,c2,Initial,PAYG,Maitsuki,Nankagetsu,Total]
-print data
-df = pd.DataFrame(data)
-writer = pd.ExcelWriter("./src/hoge1.xlsx")
-df.to_excel(writer, sheet_name="hoge1", index=False)
-workbook = writer.book
-worksheet1 = writer.sheets['hoge1']
+writer.save()
+
+
+# 3
+# 取引先コードごとに、
+# 201806のC列＝TS基本料金orTSOP月額orAPI保守費用の
+# G列の合計＝June_2018エクセルのE列Maitsuki+F列Nankagetsuが一致するはずなので、差分があればそのリスト欲しいです。
+# 取引先コードは、201806のエクセルはE列、June_2018のエクセルはB列です。
+out = {
+    u'取引先コード': [],
+    u'取引先名': [],
+    u'補助科目': [],
+    u'Maitsuki + Nankagetsu': [],
+    u'貸方金額': []
+}
+
+target_excel = './src/initial/target.xlsx'
+compare_excel = './src/initial/compare.xlsx'
+df_target = pd.read_excel(target_excel)
+df_compare = pd.read_excel(compare_excel)
+
+df_target_queried = df_target.query('c2 == [u"TS基本料金",u"TSOP月額",u"API保守費用"]')
+
+for index, row in df_target_queried.iterrows():
+    compare1 = row[u"貸方金額"]
+    code1 = str(row["c1"])
+    df_compare_queried = df_compare.query('c1 == ["' + code1 + '"]')
+    for index2, row2 in df_compare_queried.iterrows():
+        compare2 = nan_to_num(row2[u"Maitsuki"]) + nan_to_num(row2[u"Nankagetsu"])
+        if compare2 != compare1:
+            for key in out:
+                if key == u'取引先コード':
+                    value = row[4]
+                elif key == u'取引先名':
+                    value = row[5]
+                elif key == u'補助科目':
+                    value = row[2]
+                elif key == u'Maitsuki + Nankagetsu':
+                    value = compare2
+                elif key == u'貸方金額':
+                    value = row[6]
+                out[key].append(value)
+
+df_out = pd.DataFrame(out, columns=[u'取引先コード', u'取引先名', u'補助科目', u'Maitsuki + Nankagetsu', u'貸方金額'])
+writer = pd.ExcelWriter("./src/maitsuki.xlsx")
+df_out.to_excel(writer, sheet_name="maitsuki", index=False)
 
 writer.save()
